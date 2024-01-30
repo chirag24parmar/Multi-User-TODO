@@ -19,7 +19,31 @@
       </div>
       <div class="col">
         <div class="border">
-          {{todos}}
+
+          <div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Status</th>
+                  <th>Priority</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for todo in todos %}
+                <tr>
+                  <td>{{forloop.counter}}</td> <!-- counter means counting start from one -->
+                  <td>{{todo.title}}</td>
+                  <td>{{todo.status}}</td>
+                  <td>{{todo.priority}}</td>
+                </tr>
+                {% endfor %}
+
+              </tbody>
+            </table>
+          </div>
 
         </div>
       </div>

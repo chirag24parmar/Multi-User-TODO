@@ -1,22 +1,26 @@
 from django.shortcuts import render ,redirect
 from django.http import HttpResponse
 #importing django default user creation page
-from django.contrib.auth import authenticate, login as loginuser
+from django.contrib.auth import authenticate, login as loginuser ,logout
 from django.contrib.auth.forms import UserCreationForm ,AuthenticationForm
 from app.forms import TODOForm
 from app.models import TODO
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+@login_required(login_url='login')
 def home(request):
-    # with the below function we can get all the todos from the database
-    todos = TODO.objects.all()
-    form = TODOForm()
-    context = {
-        "form" : form,
-        "todos" : todos
-    }
-    return render(request, 'index.html',context=context)
+    # with the below function we can get all the todos of perticular user from the database
+     if request.user.is_authenticated:
+        user = request.user
+        todos = TODO.objects.filter(user = user)
+        form = TODOForm()
+        context = {
+            "form" : form,
+            "todos" : todos
+        }
+        return render(request, 'index.html',context=context)
 
 def login(request):
     if request.method == 'GET':
@@ -65,6 +69,7 @@ def signup(request):
         else:
             return render(request,'signup.html',context=context)
 
+@login_required(login_url='login')
 def add_todo(request):
     # here first it will check user is authenticated or not
     if request.user.is_authenticated:
@@ -82,3 +87,7 @@ def add_todo(request):
             "form" : form
             }
             return render(request, 'index.html',context=context)
+
+def signout(request):
+    logout(request)
+    return redirect('login')
