@@ -3,13 +3,20 @@ from django.http import HttpResponse
 #importing django default user creation page
 from django.contrib.auth import authenticate, login as loginuser
 from django.contrib.auth.forms import UserCreationForm ,AuthenticationForm
+from app.forms import TODOForm
+from app.models import TODO
 
 # Create your views here.
 
 def home(request):
-    # print('Hello World')
-    # return HttpResponse("Response ")
-    return render(request, 'index.html')
+    # with the below function we can get all the todos from the database
+    todos = TODO.objects.all()
+    form = TODOForm()
+    context = {
+        "form" : form,
+        "todos" : todos
+    }
+    return render(request, 'index.html',context=context)
 
 def login(request):
     if request.method == 'GET':
@@ -57,3 +64,21 @@ def signup(request):
                 return redirect('login')
         else:
             return render(request,'signup.html',context=context)
+
+def add_todo(request):
+    # here first it will check user is authenticated or not
+    if request.user.is_authenticated:
+        user = request.user
+        form = TODOForm(request.POST)
+        print(user)
+        if form.is_valid():
+            todo = form.save(commit=False)
+            todo.user = user
+            todo.save()
+            print(todo)
+            return redirect("home")
+        else:
+            context = {
+            "form" : form
+            }
+            return render(request, 'index.html',context=context)
