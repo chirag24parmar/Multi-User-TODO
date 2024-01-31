@@ -1,4 +1,4 @@
-# Django_Crud
+# Django
 Learning backend using Django. Creating TODO APP using Django .
 
 # Initial setup
