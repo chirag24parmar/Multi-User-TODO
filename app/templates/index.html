@@ -20,6 +20,17 @@
       <div class="col">
         <div class="border">
 
+          {% if todos|length == 0 %}
+
+          <div class="p-4">
+            <br>
+            <div class="alert alert-info text-center">
+              <p class="" style="font-size: 30px;">No Todos</p>
+            </div>
+            <br>
+          </div>
+
+          {% else %}
           <div>
             <table class="table">
               <thead>
@@ -28,6 +39,7 @@
                   <th>Title</th>
                   <th>Status</th>
                   <th>Priority</th>
+                  <th>Action</th>
                 </tr>
               </thead>
 
@@ -36,14 +48,30 @@
                 <tr>
                   <td>{{forloop.counter}}</td> <!-- counter means counting start from one -->
                   <td>{{todo.title}}</td>
-                  <td>{{todo.status}}</td>
+                  <td>
+                    {% if todo.status == 'C' %}
+                    🗹
+                    {% else %}
+                    ☐
+                    {% endif %}
+                  </td>
                   <td>{{todo.priority}}</td>
+                  <td>
+                    <a href="delete_todo/{{todo.id}}" class="text-decoration-none">🗑️</a>
+                    {% if todo.status == 'P' %}
+                    <a href="change_todo/{{todo.id}}/C" class="text-decoration-none">✅</a>
+                    {% else %}
+                    <a href="change_todo/{{todo.id}}/P" class="text-decoration-none">🕜</a>
+                    {% endif %}
+                  </td>
                 </tr>
                 {% endfor %}
 
               </tbody>
             </table>
           </div>
+
+          {% endif %}
 
         </div>
       </div>

@@ -14,7 +14,7 @@ def home(request):
     # with the below function we can get all the todos of perticular user from the database
      if request.user.is_authenticated:
         user = request.user
-        todos = TODO.objects.filter(user = user)
+        todos = TODO.objects.filter(user = user).order_by('priority')
         form = TODOForm()
         context = {
             "form" : form,
@@ -87,6 +87,16 @@ def add_todo(request):
             "form" : form
             }
             return render(request, 'index.html',context=context)
+
+def delete_todo(request,id):
+    TODO.objects.get(pk=id).delete()
+    return redirect('home')
+
+def change_todo(request,id,status):
+    todo = TODO.objects.get(pk=id)
+    todo.status = status
+    todo.save()
+    return redirect('home')
 
 def signout(request):
     logout(request)
